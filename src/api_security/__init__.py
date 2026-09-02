@@ -22,6 +22,7 @@ def home():
         "message": "API Authentication Service is running!",
         "endpoints": {
             "POST /login": "Send email and password to receive JWT token",
+            "GET /protected": "Send JWT token in Authorization header to access",
             "GET /protected-route": "Send JWT token in Authorization header to access"
         }
     }), 200
@@ -47,12 +48,13 @@ def handle_login():
     else:
         return jsonify({"message": "Invalid credentials"}), 401
 
+@app.route("/protected", methods=["GET"])
 @app.route("/protected-route", methods=["GET"])
 @jwt_required()
-def handle_protected_route():
+def handle_protected():
     current_user = get_jwt_identity()
     return jsonify({
-        "message": "This is a protected route. You have access!",
+        "message": f"Access granted to {current_user}",
         "email": current_user
     }), 200
 
